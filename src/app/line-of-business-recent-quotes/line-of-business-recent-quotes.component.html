@@ -1,0 +1,12 @@
+<div>
+    
+    <ul class="recent-quotes">
+        <label class="badge">Recent quotes</label>
+      <li *ngFor="let recentQuote of allRecentQuotes">
+        
+          <span class="badge">{{ recentQuote.id }}</span>
+          
+          {{recentQuote.quoteNumber}}-{{recentQuote.lineOfBusiness }}
+      </li>
+    </ul>
+  </div>

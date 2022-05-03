@@ -3,15 +3,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-
+import { RecentQuotes } from './RecentQuotes';
 import { LineOfBusiness } from './LineOfBusiness';
 import { MessageService } from './message.service';
 
 
 @Injectable({ providedIn: 'root' })
 export class LineOfBusinessService {
+  
 
   private lineOfBusinessUrl = 'api/linesOfBusiness';  // URL to web api
+  // private recentQuoteUrl = 'api/allRecentQuotes';
+  private recentQuoteUrl = 'api/recentQuotes';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -28,6 +31,15 @@ export class LineOfBusinessService {
         tap(_ => this.log('fetched lines of business')),
         catchError(this.handleError<LineOfBusiness[]>('getLinesOfBusiness', []))
       );
+  }
+  getAllRecentQuotes(): Observable<RecentQuotes[]>  {
+    return this.http.get<RecentQuotes[]>(this.recentQuoteUrl)
+      .pipe(
+        tap(_ => this.log('fetched recent Quote')),
+        catchError(this.handleError<RecentQuotes[]>('getAllRecentQuotes', []))
+      );
+    
+    // throw new Error('Method not implemented.');
   }
 
   /** GET line of business by id. Return `undefined` when id not found */
@@ -50,6 +62,14 @@ export class LineOfBusinessService {
     return this.http.get<LineOfBusiness>(url).pipe(
       tap(_ => this.log(`fetched lineOfBusiness id=${id}`)),
       catchError(this.handleError<LineOfBusiness>(`getLineOfBusiness id=${id}`))
+    );
+  }
+
+  getRecentQuotes(id: number): Observable<RecentQuotes> {
+    const url = `${this.recentQuoteUrl}/${id}`;
+    return this.http.get<RecentQuotes>(url).pipe(
+      tap(_ => this.log(`fetched recentQuote id=${id}`)),
+      catchError(this.handleError<RecentQuotes>(`getRecentQuotes id=${id}`))
     );
   }
 
