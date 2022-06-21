@@ -12,6 +12,7 @@ import { LineOfBusinessService } from '../lineOfBusiness.service';
 })
 export class LineOfBusinessDetailComponent implements OnInit {
   lineOfBusiness: LineOfBusiness | undefined;
+  count: number | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -21,7 +22,17 @@ export class LineOfBusinessDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.getLineOfBusiness();
+    this.getRecentQuotes();
   }
+
+  getRecentQuotes(): void {
+    const currentLine = parseInt(this.route.snapshot.paramMap.get('id')!, 10);
+    this.lineOfBusinessService.getRecentQuotes()
+    .subscribe(recentQuotesCount => {
+      this.count = recentQuotesCount.find(x => x.id === currentLine).count;
+    }
+  );
+}
 
   getLineOfBusiness(): void {
     const id = parseInt(this.route.snapshot.paramMap.get('id')!, 10);

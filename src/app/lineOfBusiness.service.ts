@@ -7,11 +7,16 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { LineOfBusiness } from './LineOfBusiness';
 import { MessageService } from './message.service';
 
+import {forkJoin} from 'rxjs';
+import { RecentQuotes } from './RecentQuotes';
+
 
 @Injectable({ providedIn: 'root' })
 export class LineOfBusinessService {
 
   private lineOfBusinessUrl = 'api/linesOfBusiness';  // URL to web api
+  private recentQuotesUrl = 'api/recentQuotes';  // URL to web api
+
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -29,6 +34,45 @@ export class LineOfBusinessService {
         catchError(this.handleError<LineOfBusiness[]>('getLinesOfBusiness', []))
       );
   }
+
+    /** GET combined quotes table from the server*/
+    getRecentQuotes(): Observable<any[]> {
+      let response1 = this.http.get<LineOfBusiness[]>(this.lineOfBusinessUrl)
+      let response2 = this.http.get<RecentQuotes[]>(this.recentQuotesUrl)
+      return forkJoin([response1, response2])
+        .pipe(
+          //find where they match by lineOfBusiness id
+          map((data: any[]) => {
+            let sumArr= data[1].map((itm:any) => ({
+            ...data[0].find((item:any) => (itm.lineOfBusiness === item.id) && item),
+            ...itm
+          }));;
+            // groupby and count 
+            let groupArr = sumArr.reduce((a: any, b: any) => {
+              let name = b.name;
+                if (!a.hasOwnProperty(name)) {
+                  a[name] = 0;
+                }
+              a[name]++;
+              return a;
+            }, {});
+            // add key value pairs
+            let countArr = Object.keys(groupArr).map((k: any) => {
+              return { name: k, count: groupArr[k],id:0};
+            });
+            // adding line of business id for line of business details to find easier
+            let anotherArr = data[0].map((k: any) => {
+              return { id: k.id };
+            });
+            countArr.forEach((item, i) => {
+              item.id = anotherArr[i].id;
+            });
+            return countArr;
+          }),
+          tap(_ => this.log('fetched recentQuotes')),
+          catchError(this.handleError<any[]>('recentQuotes', []))
+        );
+    }
 
   /** GET line of business by id. Return `undefined` when id not found */
   getLineOfBusinessNo404<Data>(id: number): Observable<LineOfBusiness> {

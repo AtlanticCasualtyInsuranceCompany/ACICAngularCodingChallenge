@@ -1,0 +1,10 @@
+<table>
+    <tr>
+        <th>Top Lines Of Business |</th>
+        <th>Total Quotes</th>
+    </tr>
+    <tr *ngFor="let line of quotes | slice:0:2">
+        <td>{{line.name}}</td>
+        <td>{{line.count}}</td>
+    </tr>
+</table>
