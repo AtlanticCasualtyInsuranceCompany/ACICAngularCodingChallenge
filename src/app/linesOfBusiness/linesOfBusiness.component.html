@@ -6,9 +6,12 @@
   <br />
   <label for="lineOfBusiness-description">Line Of Business Description: </label>
   <input id="lineOfBusiness-description" #lineOfBusinessDescription />
+  <br />
+  <label for="lineOfBusiness-quoted">Line Of Business Quoted:</label>
+  <input id="lineOfBusiness-quoted" #lineOfBusinessQuoted />
 
   <!-- (click) passes input value to add() and then clears the input -->
-  <button class="add-button" (click)="add(lineOfBusinessName.value, lineOfBusinessDescription.value); lineOfBusinessName.value='';">
+  <button class="add-button" (click)="add(lineOfBusinessName.value, lineOfBusinessDescription.value, lineOfBusinessQuoted.value); lineOfBusinessName.value='';">
     Add New Line of Business
   </button>
 </div>
@@ -17,7 +20,7 @@
   <li *ngFor="let lineOfBusiness of linesOfBusiness">
     <a routerLink="/detail/{{lineOfBusiness.id}}">
       
-      <span class="badge">{{lineOfBusiness.id}}</span> {{lineOfBusiness.name}} - {{lineOfBusiness.description}}
+      <span class="badge">{{lineOfBusiness.id}}</span> {{lineOfBusiness.name}} - {{lineOfBusiness.description}} - {{lineOfBusiness.quoted}}
     </a>
     <button class="delete" title="delete lineOfBusiness"
       (click)="delete(lineOfBusiness)">x</button>

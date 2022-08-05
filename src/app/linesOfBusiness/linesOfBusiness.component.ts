@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
 
 import { LineOfBusiness } from '../LineOfBusiness';
 import { LineOfBusinessService } from '../lineOfBusiness.service';
+
 
 @Component({
   selector: 'app-linesOfBusiness',
@@ -16,16 +17,16 @@ export class LineOfBusinessComponent implements OnInit {
   ngOnInit() {
     this.getLinesOfBusiness();
   }
-
+  
   getLinesOfBusiness(): void {
     this.lineOfBusinessService.getLinesOfBusiness()
     .subscribe(linesOfBusiness => this.linesOfBusiness = linesOfBusiness);
-  }
+    }
 
-  add(name: string, description: string): void {
+  add(name: string, description: string, quoted: Optional): void {
     name = name.trim();
     if (!name) { return; }
-    this.lineOfBusinessService.addLineOfBusiness({ name, description } as LineOfBusiness)
+    this.lineOfBusinessService.addLineOfBusiness({ name, description, quoted} as LineOfBusiness)
       .subscribe(lineOfBusiness => {
         this.linesOfBusiness.push(lineOfBusiness);
       });
@@ -37,3 +38,4 @@ export class LineOfBusinessComponent implements OnInit {
   }
 
 }
+
