@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 import { LineOfBusiness } from './LineOfBusiness';
+import { RecentQuote } from './RecentQuote';
+import { RECENT_QUOTES } from './mock-recentQuotes';
 
 @Injectable({
   providedIn: 'root',
@@ -17,17 +19,17 @@ export class InMemoryDataService implements InMemoryDbService {
 
 
     const recentQuotes = [
-      { id: 101, quoteNumber: 'AC123PC', lineOfBusiness: 11 },
-      { id: 102, quoteNumber: 'AC124PC', lineOfBusiness: 12 },
-      { id: 103, quoteNumber: 'AC125PC', lineOfBusiness: 13 },
-      { id: 104, quoteNumber: 'AC126PC', lineOfBusiness: 14 },
-      { id: 105, quoteNumber: 'AC127PC', lineOfBusiness: 15 },
-      { id: 106, quoteNumber: 'AC125PC', lineOfBusiness: 13 },
-      { id: 107, quoteNumber: 'AC126PC', lineOfBusiness: 13 },
-      { id: 108, quoteNumber: 'AC127PC', lineOfBusiness: 15 }
+      { id: 101, quoteNumber: 'AC123PC', lineOfBusiness: 11, name: 'General Liability' },
+      { id: 102, quoteNumber: 'AC124PC', lineOfBusiness: 12, name: 'Commercial Property' },
+      { id: 103, quoteNumber: 'AC125PC', lineOfBusiness: 13, name: 'Inland Marine'  },
+      { id: 104, quoteNumber: 'AC126PC', lineOfBusiness: 14, name: 'Ocean Marine' },
+      { id: 105, quoteNumber: 'AC127PC', lineOfBusiness: 15, name: 'Garage' },
+      { id: 106, quoteNumber: 'AC125PC', lineOfBusiness: 13, name: 'Inland Marine' },
+      { id: 107, quoteNumber: 'AC126PC', lineOfBusiness: 13, name: 'Inland Marine' },
+      { id: 108, quoteNumber: 'AC127PC', lineOfBusiness: 15, name: 'Garage' }
     ];
 
-    return {linesOfBusiness};
+    return {linesOfBusiness, recentQuotes};
   }
 
   // Overrides the genId method to ensure that a line of business always has an id.
@@ -37,5 +39,24 @@ export class InMemoryDataService implements InMemoryDbService {
   // line of business id + 1.
   genId(linesOfBusiness: LineOfBusiness[]): number {
     return linesOfBusiness.length > 0 ? Math.max(...linesOfBusiness.map(lineOfBusiness => lineOfBusiness.id)) + 1 : 11;
+  }
+
+  genLobId(recentQuotes: RecentQuote[]): number {
+    return recentQuotes.length > 0 ? Math.max(...recentQuotes.map(recentQuotes => recentQuotes.id)) + 1 : 101;
+  }
+
+  /** Generate the two most common lines of businesses from recent quotes array */
+  getPopularLinesOfBusiness(): string[] {
+    const lineOfBusinessCount: {[line: number]: number} = {};
+
+    for(const quote of RECENT_QUOTES) {
+      const line = quote.lineOfBusiness;
+
+      lineOfBusinessCount[line] = lineOfBusinessCount[line]?lineOfBusinessCount[line] + 1:1;
+    }
+
+    const sortedLines = Object.keys(lineOfBusinessCount).sort((a: any ,b: any) => lineOfBusinessCount[b] - lineOfBusinessCount[a]);
+
+    return sortedLines.slice(0,2);
   }
 }

@@ -82,11 +82,10 @@
         "named": "never"
       }
     },
-    // TODO(gkalpak): Fix the code and enable this.
-    // "typedef": [
-    //   true,
-    //   "call-signature"
-    // ],
+    "typedef": [
+      true,
+      "call-signature"
+    ],
     "typedef-whitespace": {
       "options": [
         {
@@ -146,8 +145,7 @@
     "component-selector": [
       true,
       "element",
-      // TODO: Fix the code and change the prefix to `"app"` (or whatever makes sense).
-      "",
+      "app",
       "kebab-case"
     ]
   }

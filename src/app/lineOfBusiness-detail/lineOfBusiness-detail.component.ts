@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { LineOfBusiness } from '../LineOfBusiness';
+import { RecentQuote } from '../RecentQuote';
 import { LineOfBusinessService } from '../lineOfBusiness.service';
 
 @Component({
@@ -12,6 +13,7 @@ import { LineOfBusinessService } from '../lineOfBusiness.service';
 })
 export class LineOfBusinessDetailComponent implements OnInit {
   lineOfBusiness: LineOfBusiness | undefined;
+  recentQuote: RecentQuote[] = [];
 
   constructor(
     private route: ActivatedRoute,

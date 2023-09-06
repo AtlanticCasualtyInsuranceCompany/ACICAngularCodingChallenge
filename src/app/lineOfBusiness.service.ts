@@ -6,12 +6,16 @@ import { catchError, map, tap } from 'rxjs/operators';
 
 import { LineOfBusiness } from './LineOfBusiness';
 import { MessageService } from './message.service';
+import { RECENT_QUOTES } from './mock-recentQuotes';
+import { RecentQuote } from './RecentQuote';
 
 
 @Injectable({ providedIn: 'root' })
 export class LineOfBusinessService {
 
   private lineOfBusinessUrl = 'api/linesOfBusiness';  // URL to web api
+  private recentQuotesUrl = 'api/recentQuote';  // URL to web api
+  recentQuote: any[] = [];
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -30,8 +34,45 @@ export class LineOfBusinessService {
       );
   }
 
+  /** GET lines of business from the server */
+  getRecentQuotes(): Observable<RecentQuote[]> {
+    return this.http.get<RecentQuote[]>(this.recentQuotesUrl)
+      .pipe(
+        tap(_ => this.log('fetched recent quotes')),
+        catchError(this.handleError<RecentQuote[]>('getRecentQuotes', []))
+      );
+  }
+
+  /** GET line of business by id. Will 404 if id not found */
+  getRecentQuote(id: number): Observable<RecentQuote> {
+    const url = `${this.recentQuotesUrl}/${id}`;
+    return this.http.get<RecentQuote>(url).pipe(
+      tap(_ => this.log(`fetched recentQuote id=${id}`)),
+      catchError(this.handleError<RecentQuote>(`getRecentQuote id=${id}`))
+    );
+  }
+
+  /** Generate the two most common lines of businesses from recent quotes array */
+  getPopularLinesOfBusiness(): RecentQuote[] {
+    const freqMap = new Map<RecentQuote, number>();
+    let maxFreq = 0;
+
+    for (const lineOfBusiness of this.recentQuote) {
+      const frequency = freqMap.get(lineOfBusiness) || 0;
+
+      const updatedFreq = frequency + 1;
+
+      freqMap.set(lineOfBusiness, updatedFreq);
+      maxFreq = Math.max(maxFreq, updatedFreq);
+
+    }
+    const popularLob = Array.from(freqMap.keys()).filter(lineOfBusiness => freqMap.get(lineOfBusiness) === maxFreq);
+
+    return popularLob;
+  }
+
   /** GET line of business by id. Return `undefined` when id not found */
-  getLineOfBusinessNo404<Data>(id: number): Observable<LineOfBusiness> {
+  getLineOfBusinessNo404<LineOfBusiness>(id: number): Observable<LineOfBusiness> {
     const url = `${this.lineOfBusinessUrl}/?id=${id}`;
     return this.http.get<LineOfBusiness[]>(url)
       .pipe(
@@ -66,6 +107,7 @@ export class LineOfBusinessService {
       catchError(this.handleError<LineOfBusiness[]>('searchLinesOfBusiness', []))
     );
   }
+
 
   //////// Save methods //////////
 
