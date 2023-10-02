@@ -4,8 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { LineOfBusiness } from './LineOfBusiness';
 import { MessageService } from './message.service';
+import { LineOfBusiness } from '../models/line-of-business.model';
 
 
 @Injectable({ providedIn: 'root' })

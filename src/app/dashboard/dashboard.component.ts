@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LineOfBusiness } from '../LineOfBusiness';
-import { LineOfBusinessService } from '../lineOfBusiness.service';
+import { LineOfBusiness } from '../models/line-of-business.model';
+import { LineOfBusinessService } from '../services/line-of-business.service';
 
 @Component({
   selector: 'app-dashboard',

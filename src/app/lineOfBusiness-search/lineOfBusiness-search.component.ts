@@ -5,9 +5,8 @@ import { Observable, Subject } from 'rxjs';
 import {
    debounceTime, distinctUntilChanged, switchMap
  } from 'rxjs/operators';
-
-import { LineOfBusiness } from '../LineOfBusiness';
-import { LineOfBusinessService } from '../lineOfBusiness.service';
+import { LineOfBusiness } from '../models/line-of-business.model';
+import { LineOfBusinessService } from '../services/line-of-business.service';
 
 @Component({
   selector: 'app-lineOfBusiness-search',
@@ -18,7 +17,7 @@ export class LineOfBusinessSearchComponent implements OnInit {
   linesOfBusiness$!: Observable<LineOfBusiness[]>;
   private searchTerms = new Subject<string>();
 
-  constructor(private lineOfBusinessService: LineOfBusinessService) {} 
+  constructor(private lineOfBusinessService: LineOfBusinessService) {}
 
   // Push a search term into the observable stream.
   search(term: string): void {
