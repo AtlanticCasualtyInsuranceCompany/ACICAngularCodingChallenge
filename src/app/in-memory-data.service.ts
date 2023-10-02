@@ -17,17 +17,17 @@ export class InMemoryDataService implements InMemoryDbService {
 
 
     const recentQuotes = [
-      { id: 101, quoteNumber: 'AC123PC', lineOfBusiness: 11 },
-      { id: 102, quoteNumber: 'AC124PC', lineOfBusiness: 12 },
-      { id: 103, quoteNumber: 'AC125PC', lineOfBusiness: 13 },
-      { id: 104, quoteNumber: 'AC126PC', lineOfBusiness: 14 },
-      { id: 105, quoteNumber: 'AC127PC', lineOfBusiness: 15 },
-      { id: 106, quoteNumber: 'AC125PC', lineOfBusiness: 13 },
-      { id: 107, quoteNumber: 'AC126PC', lineOfBusiness: 13 },
-      { id: 108, quoteNumber: 'AC127PC', lineOfBusiness: 15 }
+      { id: 101, quoteNumber: 'AC123PC', lineOfBusinessId: 11 },
+      { id: 102, quoteNumber: 'AC124PC', lineOfBusinessId: 12 },
+      { id: 103, quoteNumber: 'AC125PC', lineOfBusinessId: 13 },
+      { id: 104, quoteNumber: 'AC126PC', lineOfBusinessId: 14 },
+      { id: 105, quoteNumber: 'AC127PC', lineOfBusinessId: 15 },
+      { id: 106, quoteNumber: 'AC125PC', lineOfBusinessId: 13 },
+      { id: 107, quoteNumber: 'AC126PC', lineOfBusinessId: 13 },
+      { id: 108, quoteNumber: 'AC127PC', lineOfBusinessId: 15 }
     ];
 
-    return {linesOfBusiness};
+    return {linesOfBusiness, recentQuotes};
   }
 
   // Overrides the genId method to ensure that a line of business always has an id.
