@@ -1,0 +1,7 @@
+<div>
+  <h4>Most frequently quoted lines of business: </h4>
+
+  <div *ngFor="let lineOfBusiness of topKLinesOfBusiness$ | async">
+    <div>{{lineOfBusiness.name}}: {{lineOfBusiness.quantity}}</div>
+  </div>
+</div>
