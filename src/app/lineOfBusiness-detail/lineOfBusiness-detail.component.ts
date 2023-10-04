@@ -4,7 +4,8 @@ import { Location } from '@angular/common';
 
 import { LineOfBusiness } from '../models/line-of-business.model';
 import { LineOfBusinessService } from '../services/line-of-business.service';
-import { Quote } from '../models/quote';
+
+import { Quote } from '../models/quote.model';
 import { QuoteService } from '../services/quote.service';
 
 @Component({

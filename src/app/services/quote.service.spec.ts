@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { QuoteService } from './quote.service';
-import { Quote } from '../models/quote';
+import { Quote } from '../models/quote.model';
 
 describe('QuoteService', () => {
   let service: QuoteService;
