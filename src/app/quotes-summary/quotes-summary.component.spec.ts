@@ -40,6 +40,11 @@ describe('QuotesSummaryComponent', () => {
       { id: 108, quoteNumber: 'AC127PC', lineOfBusinessId: 15 }
     ]));
 
+    mockLineOfBusinessService.getLineOfBusinessNo404.and.returnValues(
+      of({ id: 13, name: 'Inland Marine', description: 'Coverage for tools and machinery on job sites.' }),
+      of({ id: 15, name: 'Garage', description: 'Coverage for auto repairs and car sales.' })
+    );
+
     fixture.detectChanges();
   });
 
