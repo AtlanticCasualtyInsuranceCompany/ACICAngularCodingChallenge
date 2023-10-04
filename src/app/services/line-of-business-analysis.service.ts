@@ -1,9 +1,9 @@
-import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { tap, catchError, switchMap, map } from 'rxjs/operators';
 import { MessageService } from './message.service';
-import { Quote } from '../models/quote';
+import { Quote } from '../models/quote.model';
 import { LineOfBusinessService } from './line-of-business.service';
 import { QuoteService } from './quote.service';
 import { LineOfBusiness } from '../models/line-of-business.model';
@@ -27,20 +27,29 @@ export class LineOfBusinessAnalysisService {
     return this.quoteService.getQuotes().pipe(
       tap(_ => this.log('fetched quotes')),
       catchError(this.handleError<Quote[]>('getQuotes', [])),
-      switchMap(quotes => {
-        return this.lineOfBusinessService.getLinesOfBusiness().pipe(
-          tap(_ => this.log('fetched lines of business')),
-          catchError(this.handleError<LineOfBusiness[]>('getLinesOfBusiness', [])),
-          map(linesOfBusiness => {
-            let lineFrequencyRecord = this.getLineFrequencyRecord(quotes);
-            return this.getLinesOfBusinessSortedByQuoteFrequencyDescending(linesOfBusiness, lineFrequencyRecord, k)
-          })
-        );
-      })
-    );
-  }
+      map(quotes => this.getLineOfBusinessFrequencyRecord(quotes)),
+      map(record => ({
+          ids: this.getLinesOfBusinessSortedByQuoteFrequencyDescending(record, k),
+          record
+      })),
+      switchMap(({ ids, record }) =>
+          forkJoin(ids.map(id =>
+              this.lineOfBusinessService.getLineOfBusinessNo404(id).pipe(
+                  tap(_ => this.log(`fetched line of business id=${id}`)),
+                  catchError(this.handleError<LineOfBusiness>(`getLineOfBusiness id=${id}`)),
+                  map(lineOfBusiness => ({
+                      id: lineOfBusiness.id,
+                      name: lineOfBusiness.name,
+                      quantity: record[id]
+                  }))
+              )
+          ))
+      )
+  );
+}
 
-  private getLineFrequencyRecord(quotes: Quote[]) {
+
+  private getLineOfBusinessFrequencyRecord(quotes: Quote[]) {
     return quotes.reduce((record: Record<number, number>, quote) => {
       if (quote.lineOfBusinessId in record) {
         record[quote.lineOfBusinessId]++;
@@ -51,16 +60,11 @@ export class LineOfBusinessAnalysisService {
     }, {});
   }
 
-  private getLinesOfBusinessSortedByQuoteFrequencyDescending(lines: LineOfBusiness[], record: Record<number, number>, k: number) {
-    return lines
-      .sort((a, b) => (record[b.id] || 0) - (record[a.id] || 0))
+  private getLinesOfBusinessSortedByQuoteFrequencyDescending(record: Record<number, number>, k: number) {
+    return Object.entries(record)
+      .sort(([, aFrequency], [, bFrequency]) => bFrequency - aFrequency) // descending
       .slice(0, k)
-      .map(line => ({
-          id: line.id,
-          name: line.name,
-          quantity: record[line.id] || 0
-        })
-    );
+      .map(([id]) => +id);
   }
 
   /**
