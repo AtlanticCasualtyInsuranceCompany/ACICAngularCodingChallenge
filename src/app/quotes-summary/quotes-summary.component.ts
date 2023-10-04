@@ -1,11 +1,6 @@
-import { QuoteAnalysisService } from './../services/quote-analysis.service';
+import { LineOfBusinessAnalysisService } from './../services/line-of-business-analysis.service';
 import { Component, OnInit } from '@angular/core';
-import { Observable, forkJoin, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { LineOfBusiness } from '../models/line-of-business.model';
-import { LineOfBusinessService } from '../services/line-of-business.service';
-import { QuoteService } from '../services/quote.service';
-import { Quote } from '../models/quote';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-quotes-summary',
@@ -14,11 +9,11 @@ import { Quote } from '../models/quote';
 })
 export class QuotesSummaryComponent implements OnInit {
   numberOfLinesOfBusinessToDisplay: number = 2;
-  topKLinesOfBusiness$?: Observable<{id: number, name: string, quantity: number}[]>;
+  topKLinesOfBusiness$: Observable<{id: number, name: string, quantity: number}[]> | undefined;
 
-  constructor(private quoteAnalysisService: QuoteAnalysisService) {}
+  constructor(private lineOfBusinessAnalysisService: LineOfBusinessAnalysisService) {}
 
   ngOnInit() {
-    this.topKLinesOfBusiness$ = this.quoteAnalysisService.getTopKLinesOfBusinessByQuoteFrequency(this.numberOfLinesOfBusinessToDisplay);
+    this.topKLinesOfBusiness$ = this.lineOfBusinessAnalysisService.getTopKLinesOfBusinessByQuoteFrequency(this.numberOfLinesOfBusinessToDisplay);
   }
 }

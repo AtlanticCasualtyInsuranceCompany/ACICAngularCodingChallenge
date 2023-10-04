@@ -11,7 +11,7 @@ import { LineOfBusiness } from '../models/line-of-business.model';
 @Injectable({
   providedIn: 'root'
 })
-export class QuoteAnalysisService {
+export class LineOfBusinessAnalysisService {
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -22,7 +22,7 @@ export class QuoteAnalysisService {
     private lineOfBusinessService: LineOfBusinessService,
     private quoteService: QuoteService) { }
 
-  /** GET quotes from the server */
+  /** GET top K lines of business ordered by quote frequency (descending) */
   getTopKLinesOfBusinessByQuoteFrequency(k: number): Observable<{id: number; name: string; quantity: number}[]> {
     return this.quoteService.getQuotes().pipe(
       tap(_ => this.log('fetched quotes')),
