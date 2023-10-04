@@ -1,7 +1,7 @@
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, map } from 'rxjs/operators';
 import { MessageService } from './message.service';
 import { Quote } from '../models/quote';
 
@@ -27,6 +27,14 @@ export class QuoteService {
       catchError(this.handleError<Quote[]>('getQuotes', []))
     );
   }
+
+  getQuotesByLineOfBusinessId(lineOfBusinessId: number): Observable<Quote[]> {
+    return this.http.get<Quote[]>(this.quoteUrl).pipe(
+      tap(_ => this.log('fetched quotes')),
+      map(quotes => quotes.filter(quote => quote.lineOfBusinessId === lineOfBusinessId)),
+      catchError(this.handleError<Quote[]>('getQuotesByLineOfBusinessId', []))
+    );
+}
 
   /**
    * Handle Http operation that failed.
