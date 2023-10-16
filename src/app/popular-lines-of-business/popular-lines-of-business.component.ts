@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { LineOfBusiness } from '../LineOfBusiness';
 import { LineOfBusinessQuoteSummary, Quote } from '../Quote';
-import { LineOfBusinessService } from '../lineOfBusiness.service';
 import { QuoteService } from '../Quote.service';
+import { LineOfBusinessService } from '../lineOfBusiness.service';
 
 @Component({
   selector: 'app-popular-lines-of-business',
@@ -21,6 +21,17 @@ export class PopularLinesOfBusinessComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.fetchLinesOfBusinessAndRecentQuotes()
+  }
+
+  // subscribe to changes in lines of business (add/delete/update) and refetch data
+  notifierSubscription: Subscription = this.lineOfBusinessService.eventEmitterNotifier.subscribe(_ => this.fetchLinesOfBusinessAndRecentQuotes());
+
+  /**
+   * fetch all lines of businesses and recent quotes
+   * then find 2 most popular lines of business
+   */
+  fetchLinesOfBusinessAndRecentQuotes() {
     forkJoin([
       this.lineOfBusinessService.getLinesOfBusiness(),
       this.quoteService.getRecentQuotes()

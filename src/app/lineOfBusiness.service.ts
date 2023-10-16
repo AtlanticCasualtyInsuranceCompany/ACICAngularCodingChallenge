@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
@@ -13,6 +13,8 @@ export class LineOfBusinessService {
 
   private lineOfBusinessUrl = 'api/linesOfBusiness';  // URL to web api
 
+  eventEmitterNotifier: EventEmitter<null> = new EventEmitter();
+
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
@@ -20,6 +22,11 @@ export class LineOfBusinessService {
   constructor(
     private http: HttpClient,
     private messageService: MessageService) { }
+
+  /** event emitter used to communicate line of business changes  */
+  notifyAboutChange() {
+    this.eventEmitterNotifier.emit();
+  }
 
   /** GET lines of business from the server */
   getLinesOfBusiness(): Observable<LineOfBusiness[]> {
@@ -61,8 +68,8 @@ export class LineOfBusinessService {
     }
     return this.http.get<LineOfBusiness[]>(`${this.lineOfBusinessUrl}/?name=${term}`).pipe(
       tap(x => x.length ?
-         this.log(`found line of business matching "${term}"`) :
-         this.log(`no lines of business matching "${term}"`)),
+        this.log(`found line of business matching "${term}"`) :
+        this.log(`no lines of business matching "${term}"`)),
       catchError(this.handleError<LineOfBusiness[]>('searchLinesOfBusiness', []))
     );
   }

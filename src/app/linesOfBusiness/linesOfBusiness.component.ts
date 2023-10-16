@@ -11,15 +11,20 @@ import { LineOfBusinessService } from '../lineOfBusiness.service';
 export class LineOfBusinessComponent implements OnInit {
   linesOfBusiness: LineOfBusiness[] = [];
 
-  constructor(private lineOfBusinessService: LineOfBusinessService) { } 
+  constructor(private lineOfBusinessService: LineOfBusinessService) { }
 
   ngOnInit() {
     this.getLinesOfBusiness();
   }
 
+  // used to receive notifications on line of business updates
+  notifyForChange() {
+    this.lineOfBusinessService.notifyAboutChange();
+  }
+
   getLinesOfBusiness(): void {
     this.lineOfBusinessService.getLinesOfBusiness()
-    .subscribe(linesOfBusiness => this.linesOfBusiness = linesOfBusiness);
+      .subscribe(linesOfBusiness => this.linesOfBusiness = linesOfBusiness);
   }
 
   add(name: string, description: string): void {
@@ -29,11 +34,13 @@ export class LineOfBusinessComponent implements OnInit {
       .subscribe(lineOfBusiness => {
         this.linesOfBusiness.push(lineOfBusiness);
       });
+    this.notifyForChange()
   }
 
   delete(lineOfBusiness: LineOfBusiness): void {
     this.linesOfBusiness = this.linesOfBusiness.filter(lob => lob !== lineOfBusiness);
     this.lineOfBusinessService.deleteLineOfBusiness(lineOfBusiness.id).subscribe();
+    this.notifyForChange()
   }
 
 }
