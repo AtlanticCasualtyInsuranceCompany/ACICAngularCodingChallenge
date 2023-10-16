@@ -1,0 +1,6 @@
+<div class="container">
+    <p class="bold">Most Popular Lines of Businesses</p>
+    <div *ngFor="let business of lineOfBusinessQuoteSummaries">
+        <p>{{ business.lineOfBusiness.name }} | {{ business.numberOfQuotes }} Quotes</p>
+    </div>
+</div>
