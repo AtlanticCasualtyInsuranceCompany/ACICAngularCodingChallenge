@@ -14,6 +14,7 @@ import { LineOfBusinessDetailComponent } from './lineOfBusiness-detail/lineOfBus
 import { LineOfBusinessComponent } from './linesOfBusiness/linesOfBusiness.component';
 import { LineOfBusinessSearchComponent } from './lineOfBusiness-search/lineOfBusiness-search.component';
 import { MessagesComponent } from './messages/messages.component';
+import { PopularLinesOfBusinessComponent } from './popular-lines-of-business/popular-lines-of-business.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { MessagesComponent } from './messages/messages.component';
     LineOfBusinessDetailComponent,
     LineOfBusinessComponent,
     LineOfBusinessSearchComponent,
-    MessagesComponent
+    MessagesComponent,
+    PopularLinesOfBusinessComponent
   ],
   bootstrap: [ AppComponent ]
 })
